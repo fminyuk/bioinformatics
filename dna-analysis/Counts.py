@@ -1,7 +1,7 @@
 import numpy as np
 
-num_2_dna = dict(enumerate('ACGT'))
-dna_2_num = {l: i for i, l in num_2_dna.items()}
+num_2_dna = 'ACGT'
+dna_2_num = {l: i for i, l in enumerate(num_2_dna)}
 
 
 def pattern_to_number(pattern: str) -> int:
