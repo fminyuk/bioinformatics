@@ -1,36 +1,36 @@
 import numpy as np
 
-num_2_dna = 'ACGT'
-dna_2_num = {l: i for i, l in enumerate(num_2_dna)}
+number_2_symbol = 'ACGT'
+symbol_2_number = {l: i for i, l in enumerate(number_2_symbol)}
 
 
 def pattern_to_number(pattern: str) -> int:
     number = 0
     for c in pattern:
         number *= 4
-        number += dna_2_num[c]
+        number += symbol_2_number[c]
     return number
 
 
-def number_to_pattern(number: int, len: int) -> str:
+def number_to_pattern(number: int, k: int) -> str:
     letters = []
-    for i in range(len):
-        letters.append(num_2_dna[number % 4])
+    for i in range(k):
+        letters.append(number_2_symbol[number % 4])
         number //= 4
     return ''.join(letters[::-1])
 
 
-def compute_frequencies(dna: str, k: int):
+def compute_frequencies(text: str, k: int):
     frequency_array = np.zeros(4 ** k, np.int)
-    for i in range(len(dna) - k + 1):
-        j = pattern_to_number(dna[i:i + k])
+    for i in range(len(text) - k + 1):
+        j = pattern_to_number(text[i:i + k])
         frequency_array[j] += 1
     return frequency_array
 
 
-def faster_frequent_words(dna: str, k: int):
+def faster_frequent_words(text: str, k: int):
     frequent_patterns = set()
-    frequency_array = compute_frequencies(dna, k)
+    frequency_array = compute_frequencies(text, k)
     max_count = np.max(frequency_array)
     for j in range(len(frequency_array)):
         if frequency_array[j] == max_count:
@@ -40,17 +40,30 @@ def faster_frequent_words(dna: str, k: int):
     return frequent_patterns
 
 
-def read_dna_k(filename: str):
-    with open(filename, 'r') as f:
-        dna = f.readline()
-        k = f.readline()
-        return dna.strip(), int(k.strip())
+def finding_frequent_words_by_sorting(text: str, k: int):
+    frequent_patterns = []
+    index = np.zeros(len(text) - k + 1, np.int)
+    count = np.zeros(len(text) - k + 1, np.int)
+    for i in range(len(text) - k + 1):
+        pattern = text[i: i + k]
+        index[i] = pattern_to_number(pattern)
+        count[i] = 1
+    sorted_index = np.sort(index)
+    for i in range(1, len(text) - k + 1):
+        if sorted_index[i] == sorted_index[i - 1]:
+            count[i] = count[i - 1] + 1
+    max_count = np.max(count)
+    for i in range(len(text) - k + 1):
+        if count[i] == max_count:
+            pattern = number_to_pattern(sorted_index[i], k)
+            frequent_patterns.append(pattern)
+    return frequent_patterns
 
-# print(' '.join(map(str, compute_frequencies(*read_dna_k('dataset_2994_5.txt')))))
 
-
-# # print(pattern_to_number('ATGCAA'))
-# print(number_to_pattern(5437, 8))
+# def clump_finding(dna: str, k: int, L: int, t: int):
+#     frequent_patterns = set()
+#     clump = np.zeros(4 ** k, np.int)
+#     for i in range(1, len(dna) - L + 1):
+#         text = dna[i: i + L]
 #
-#
-# print(compute_frequencies())
+#     pass

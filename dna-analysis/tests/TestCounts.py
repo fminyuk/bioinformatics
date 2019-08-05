@@ -22,3 +22,8 @@ class TestCounts(unittest.TestCase):
         r = Counts.faster_frequent_words('ACGCGGCTCTGAAA', 2)
 
         self.assertEqual('AA CG CT GC', ' '.join(map(str, r)))
+
+    def test_finding_frequent_words_by_sorting(self):
+        r = Counts.finding_frequent_words_by_sorting('AAGCAAAGGTGGG', 2)
+
+        self.assertEqual('AA GG', ' '.join(map(str, r)))
